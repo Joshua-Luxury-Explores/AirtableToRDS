@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Airtable → RDS Migration</title>
+<link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<div class="app">
+  <section class="card">
+    <h2>1. Airtable Connection</h2>
+    <div class="row">
+      <input id="apiKeyInput" type="password" placeholder="Airtable API key" autocomplete="off">
+      <button id="toggleKeyBtn" class="btn secondary" type="button">Show</button>
+      <button id="saveKeyBtn" class="btn" type="button">Save</button>
+      <button id="testBtn" class="btn secondary" type="button">Test Connection</button>
+    </div>
+    <div id="keyStatus" class="hint"></div>
+    <div id="testResult" class="test-result"></div>
+  </section>
+
+  <section class="card">
+    <h2>2. Column Mapping</h2>
+    <div class="row">
+      <select id="tableSelect">
+        <option value="lexis_hotels">Hotels (scrapped_hotels → lexis_hotels)</option>
+        <option value="lexis_rooms">Rooms (room_category → lexis_rooms)</option>
+      </select>
+      <button id="fetchColumnsBtn" class="btn secondary" type="button">Fetch Columns</button>
+      <button id="saveMappingBtn" class="btn" type="button">Save Mapping</button>
+      <button id="resetMappingBtn" class="btn secondary" type="button">Reset to Default</button>
+    </div>
+    <div id="mappingWarning" class="hint warning"></div>
+    <div class="table-wrap">
+      <table id="mappingTable">
+        <thead>
+          <tr><th>RDS Column</th><th>Mapped Airtable Field</th><th>Note</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>3. Run Migration</h2>
+    <div class="row">
+      <button id="startHotelsBtn" class="btn primary" type="button" data-tables="scrapped_hotels">Sync Hotels Only</button>
+      <button id="startRoomsBtn" class="btn primary" type="button" data-tables="room_category">Sync Rooms Only</button>
+      <button id="startBtn" class="btn" type="button">Sync Both</button>
+      <span id="runningBadge" class="badge hidden">Running…</span>
+    </div>
+
+    <div class="progress-grid" id="progressGrid"></div>
+
+    <div class="log-panel">
+      <div class="log-header">Live Log</div>
+      <pre id="logBox"></pre>
+    </div>
+  </section>
+</div>
+<script src="/static/app.js"></script>
+</body>
+</html>

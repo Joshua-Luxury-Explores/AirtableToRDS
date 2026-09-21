@@ -1,0 +1,11 @@
+venv/
+__pycache__/
+*.pyc
+
+config.json
+sync_state.json
+
+app_out.log
+app_err.log
+*.log
+*.md

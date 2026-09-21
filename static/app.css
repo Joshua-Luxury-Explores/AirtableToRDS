@@ -1,0 +1,174 @@
+:root {
+  --bg: #0f1420;
+  --card: #171d2b;
+  --border: #2a3245;
+  --text: #e6e9f0;
+  --muted: #8b94a8;
+  --accent: #4f7cff;
+  --accent-2: #22c55e;
+  --danger: #ef4444;
+  --warn: #f59e0b;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+}
+
+.app {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 32px 20px 80px;
+}
+
+header h1 { margin: 0 0 4px; font-size: 26px; }
+header .arrow { color: var(--accent); }
+header .subtitle { margin: 0 0 28px; color: var(--muted); font-size: 14px; }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 22px;
+  margin-bottom: 20px;
+}
+
+.card h2 {
+  margin: 0 0 14px;
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+input, select {
+  background: #0c111c;
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-size: 14px;
+}
+
+input[type="password"], input[type="text"] { flex: 1; min-width: 240px; }
+
+.btn {
+  background: #232b3d;
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 9px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: white; font-weight: 600; }
+.btn.primary:hover { filter: brightness(1.1); }
+.btn.secondary { background: transparent; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.hint { margin-top: 10px; font-size: 13px; color: var(--muted); }
+.hint.warning { color: var(--warn); }
+
+.test-result { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; }
+.test-line { font-size: 13px; padding: 6px 10px; border-radius: 6px; background: #10151f; }
+.test-line.ok { border-left: 3px solid var(--accent-2); }
+.test-line.fail { border-left: 3px solid var(--danger); }
+
+.table-wrap { margin-top: 16px; max-height: 420px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th {
+  position: sticky; top: 0;
+  background: #0c111c;
+  text-align: left;
+  padding: 10px 12px;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+tbody td { padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+tbody tr:last-child td { border-bottom: none; }
+tbody select { width: 100%; }
+.col-locked { color: var(--muted); font-style: italic; }
+.note { color: var(--muted); font-size: 12px; }
+
+.badge {
+  background: var(--accent);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.badge.hidden { display: none; }
+
+.progress-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 18px;
+}
+@media (max-width: 700px) { .progress-grid { grid-template-columns: 1fr; } }
+
+.progress-card {
+  background: #10151f;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+.progress-card h3 { margin: 0 0 4px; font-size: 14px; }
+.progress-card .stage {
+  display: inline-block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.progress-bar-bg {
+  background: #232b3d;
+  border-radius: 6px;
+  height: 8px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  width: 0%;
+  transition: width 0.3s ease;
+}
+.progress-stats {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--muted);
+}
+.progress-card.error { border-color: var(--danger); }
+.progress-card .error-text { color: var(--danger); font-size: 12px; margin-top: 6px; }
+
+.log-panel { margin-top: 20px; }
+.log-header { font-size: 12px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; letter-spacing: 0.05em; }
+#logBox {
+  background: #0a0d14;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  height: 220px;
+  overflow-y: auto;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #9fe0a8;
+  white-space: pre-wrap;
+  margin: 0;
+}
