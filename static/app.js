@@ -186,15 +186,17 @@ function renderProgress(statusData) {
   Object.entries(statusData.tables).forEach(([name, t]) => {
     const card = el("div", { class: "progress-card" + (t.error ? " error" : "") });
     card.appendChild(el("h3", { text: TABLE_LABELS[name] || name }));
-    card.appendChild(el("div", { class: "stage", text: t.stage || "idle" }));
+    const stageText = (t.stage || "idle") + (statusData.dry_run && t.stage === "done" ? " (dry run - nothing written)" : "");
+    card.appendChild(el("div", { class: "stage", text: stageText }));
 
     let pct = 0;
     if (t.stage === "done") pct = 100;
-    else if (t.stage === "upserting") pct = 85;
-    else if (t.stage === "transforming") pct = 65;
+    else if (t.stage === "writing") pct = 85;
+    else if (t.stage === "transforming") pct = 75;
     else if (t.stage === "uploading_images") {
-      pct = 40 + (t.images_total ? (t.images_done / t.images_total) * 20 : 0);
-    } else if (t.stage === "fetched") pct = 35;
+      pct = 50 + (t.images_total ? (t.images_done / t.images_total) * 20 : 0);
+    } else if (t.stage === "checking_images") pct = 45;
+    else if (t.stage === "comparing" || t.stage === "compared") pct = 35;
     else if (t.stage === "fetching") pct = 15;
     else if (t.stage === "connecting" || t.stage === "queued") pct = 5;
 
@@ -204,8 +206,11 @@ function renderProgress(statusData) {
 
     const stats = el("div", { class: "progress-stats" });
     stats.appendChild(el("span", { text: `Fetched: ${t.fetched || 0}` }));
-    stats.appendChild(el("span", { text: `Images: ${t.images_uploaded || 0}` }));
-    stats.appendChild(el("span", { text: `Upserted: ${t.upserted || 0}` }));
+    stats.appendChild(el("span", { text: `New: ${t.inserted ?? t.to_insert ?? 0}` }));
+    stats.appendChild(el("span", { text: `Updated: ${t.updated ?? t.to_update ?? 0}` }));
+    stats.appendChild(el("span", { text: `Unchanged: ${t.unchanged || 0}` }));
+    stats.appendChild(el("span", { text: `Other source: ${t.skipped_other_source || 0}` }));
+    stats.appendChild(el("span", { text: `Images up/reused: ${t.images_uploaded || t.images_would_upload || 0}/${t.images_reused || 0}` }));
     card.appendChild(stats);
 
     if (t.error) card.appendChild(el("div", { class: "error-text", text: t.error }));
@@ -246,7 +251,11 @@ async function pollStatus() {
 
 async function startMigration(tables) {
   try {
-    const body = tables ? { tables } : {};
+    const body = {
+      dry_run: document.getElementById("dryRunCheck").checked,
+      full_resync: document.getElementById("fullResyncCheck").checked,
+    };
+    if (tables) body.tables = tables;
     await api("/api/migration/start", { method: "POST", body: JSON.stringify(body) });
     if (!state.polling) {
       state.polling = setInterval(pollStatus, 1000);

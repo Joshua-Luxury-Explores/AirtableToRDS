@@ -67,7 +67,7 @@ def progress_callback(table_name, **kwargs):
         JOB_STATE["tables"][table_name].update(kwargs)
 
 
-def run_migration_job(tables=None):
+def run_migration_job(tables=None, dry_run=False, full_resync=False):
     table_names = tables if tables else list(core.TABLES.keys())
     with JOB_LOCK:
         JOB_STATE["running"] = True
@@ -79,9 +79,11 @@ def run_migration_job(tables=None):
                 "images_uploaded": 0, "images_total": 0, "images_done": 0, "error": None,
             }
         JOB_STATE["logs"] = []
+        JOB_STATE["dry_run"] = dry_run
 
     try:
-        core.run_full_sync(progress_cb=progress_callback, tables=table_names)
+        core.run_full_sync(progress_cb=progress_callback, tables=table_names,
+                           dry_run=dry_run, full_resync=full_resync)
     except Exception as e:
         logging.getLogger("core").exception("Migration job crashed: %s", e)
     finally:
@@ -193,9 +195,11 @@ def start_migration():
     with JOB_LOCK:
         if JOB_STATE["running"]:
             return jsonify({"ok": False, "message": "Migration already running"}), 409
-    thread = threading.Thread(target=run_migration_job, args=(table_names,), daemon=True)
+    dry_run = bool(data.get("dry_run"))
+    full_resync = bool(data.get("full_resync"))
+    thread = threading.Thread(target=run_migration_job, args=(table_names, dry_run, full_resync), daemon=True)
     thread.start()
-    return jsonify({"ok": True, "tables": table_names})
+    return jsonify({"ok": True, "tables": table_names, "dry_run": dry_run})
 
 
 @app.route("/api/migration/status", methods=["GET"])
