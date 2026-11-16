@@ -49,6 +49,10 @@
       <button id="startBtn" class="btn" type="button">Sync Both</button>
       <span id="runningBadge" class="badge hidden">Running…</span>
     </div>
+    <div class="row">
+      <label><input id="dryRunCheck" type="checkbox" checked> Dry run (report only: no DB writes, no S3 uploads)</label>
+      <label><input id="fullResyncCheck" type="checkbox"> Full resync (ignore last sync time, compare every record)</label>
+    </div>
 
     <div class="progress-grid" id="progressGrid"></div>
 
